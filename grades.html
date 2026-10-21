@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grades | Michael Luis T. Ramos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Design System Variables */
+    :root {
+      --bg-base: #0b1220;
+      --bg-surface: #131e32;
+      --bg-nav: rgba(19, 30, 50, 0.8);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --border-color: rgba(255, 255, 255, 0.1);
+      --font-body: 'DM Sans', sans-serif;
+      --font-heading: 'Manrope', sans-serif;
+      --transition: 0.3s ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* Portal Header */
+    .portal-header {
+      background: var(--bg-surface);
+      padding: 3rem 2rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .portal-header h1 {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      color: var(--accent);
+    }
+
+    /* Navigation */
+    .site-nav {
+      background: var(--bg-nav);
+      backdrop-filter: blur(10px);
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-weight: 500;
+      transition: color var(--transition);
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .nav-links .active {
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 0.3rem 1rem;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Main Content */
+    .content-wrapper {
+      padding: 4rem 0;
+      flex-grow: 1;
+    }
+
+    /* Student Info Card (Matches Image Structure) */
+    .info-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2.5rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .info-card h2 {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      color: var(--text-main);
+      margin-bottom: 1.5rem;
+    }
+
+    .info-card p {
+      font-size: 1.1rem;
+      margin-bottom: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .info-card p:last-child {
+      margin-bottom: 0;
+    }
+
+    .info-card strong {
+      color: var(--text-main);
+      font-weight: 700;
+      margin-right: 0.5rem;
+    }
+
+    /* Grades Table */
+    .table-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden; /* Ensures border-radius applies to table corners */
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center; /* Centered text based on reference image */
+    }
+
+    /* Header Row */
+    .styled-table thead tr {
+      background-color: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+    }
+
+    .styled-table th,
+    .styled-table td {
+      padding: 1.2rem 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .styled-table th:last-child,
+    .styled-table td:last-child {
+      border-right: none;
+    }
+
+    .styled-table td {
+      color: var(--text-main);
+    }
+
+    .styled-table tbody tr {
+      transition: background-color var(--transition);
+    }
+
+    .styled-table tbody tr:hover {
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    /* Footer Row (Pinkish tint to match image) */
+    .styled-table tfoot tr {
+      background-color: rgba(244, 63, 94, 0.15); /* Soft pink/rose background */
+    }
+
+    .styled-table tfoot td {
+      border-bottom: none;
+      color: #fb7185; /* Soft pink text */
+      font-weight: 700;
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+    }
+
+    /* Footer */
+    .site-footer {
+      text-align: center;
+      padding: 2rem 0;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-links { flex-wrap: wrap; }
+      .table-container { overflow-x: auto; }
+      .styled-table th, .styled-table td { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="portal-header">
+    <div class="container">
+      <h1>Welcome to my Personal Student Portal</h1>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="site-nav">
+    <div class="container">
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="registerform.html">Registration Form</a></li>
+        <li><a href="grades.html">Grades</a></li>
+        <li><a href="profile.html">My Profile</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container content-wrapper">
+    
+    <!-- Student Information Card -->
+    <div class="info-card">
+      <h2>Student Information</h2>
+      <p><strong>Student Name:</strong> Michael Luis T. Ramos</p>
+      <p><strong>Course:</strong> BSCS</p>
+      <p><strong>Year Level:</strong> 3rd Year College</p>
+    </div>
+
+    <!-- Grades Table -->
+    <div class="table-container">
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>Subject Code</th>
+            <th>Subject Name</th>
+            <th>Units</th>
+            <th>Grade</th>
+            <th>Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CS301</td>
+            <td>Web Development</td>
+            <td>3</td>
+            <td>1.25</td>
+            <td>Passed</td>
+          </tr>
+          <tr>
+            <td>CS302</td>
+            <td>Database Systems</td>
+            <td>3</td>
+            <td>1.50</td>
+            <td>Passed</td>
+          </tr>
+          <tr>
+            <td>CS303</td>
+            <td>Networking</td>
+            <td>3</td>
+            <td>1.75</td>
+            <td>Passed</td>
+          </tr>
+          <tr>
+            <td>CS304</td>
+            <td>Operating Systems</td>
+            <td>3</td>
+            <td>1.25</td>
+            <td>Passed</td>
+          </tr>
+          <tr>
+            <td>CS305</td>
+            <td>Software Engineering</td>
+            <td>3</td>
+            <td>1.50</td>
+            <td>Passed</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3">General Average</td>
+            <td colspan="2">1.45</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>Copyright@2026</p>
+  </footer>
+
+</body>
+</html>

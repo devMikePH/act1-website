@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>jQuery Interactions | Michael Luis T. Ramos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Design System Variables */
+    :root {
+      --bg-base: #0b1220;
+      --bg-surface: #131e32;
+      --bg-nav: rgba(19, 30, 50, 0.8);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --border-color: rgba(255, 255, 255, 0.1);
+      --font-body: 'DM Sans', sans-serif;
+      --font-heading: 'Manrope', sans-serif;
+      --transition: 0.3s ease;
+      
+      /* Table Colors adapted for dark theme */
+      --table-header: rgba(244, 63, 94, 0.15); 
+      --table-row-1: rgba(74, 222, 128, 0.1);  
+      --table-row-2: rgba(56, 189, 248, 0.1);  
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Portal Header */
+    .portal-header {
+      background: var(--bg-surface);
+      padding: 3rem 2rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .portal-header h1 {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      color: var(--accent);
+    }
+
+    /* Navigation */
+    .site-nav {
+      background: var(--bg-nav);
+      backdrop-filter: blur(10px);
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-weight: 500;
+      transition: color var(--transition);
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .nav-links .active {
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 0.3rem 1rem;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Interaction Card */
+    .demo-wrapper {
+      padding: 4rem 0;
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .demo-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 3rem;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 700px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .demo-card h2 {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+    }
+
+    /* Output Texts */
+    .output-text {
+      color: var(--accent);
+      font-size: 1.2rem;
+      min-height: 1.8rem;
+      transition: color var(--transition);
+      font-weight: bold;
+    }
+
+    .static-text {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .link-text {
+      color: var(--accent);
+      text-decoration: underline;
+      cursor: pointer;
+      font-weight: 500;
+      user-select: none;
+    }
+
+    .link-text:hover {
+      color: var(--accent-hover);
+    }
+
+    /* Input & Controls */
+    .controls-group {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    input[type="text"], select {
+      padding: 0.6rem 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+
+    input[type="text"]:focus, select:focus {
+      border-color: var(--accent);
+    }
+
+    select option {
+      background: var(--bg-surface);
+      color: var(--text-main);
+    }
+
+    .btn-red {
+      background-color: #e11d48; 
+      color: #fff;
+      border: none;
+      padding: 0.6rem 1.5rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+      user-select: none;
+    }
+
+    .btn-red:hover {
+      background-color: #be123c;
+      transform: translateY(-2px);
+    }
+
+    /* Table Container */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      opacity: 1;
+      transform: scaleY(1);
+      transform-origin: top;
+    }
+
+    .table-container.hidden {
+      opacity: 0;
+      transform: scaleY(0);
+      position: absolute; 
+      pointer-events: none;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+    }
+
+    .data-table th, .data-table td {
+      padding: 0.8rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .data-table th {
+      background-color: var(--table-header);
+      color: #fb7185;
+      font-family: var(--font-heading);
+    }
+
+    .data-table tr:nth-child(odd) td {
+      background-color: var(--table-row-1);
+      color: #4ade80;
+    }
+
+    .data-table tr:nth-child(even) td {
+      background-color: var(--table-row-2);
+      color: var(--accent);
+    }
+
+    /* Bottom Sample Button */
+    .btn-sample {
+      background-color: #e11d48;
+      color: #fff;
+      border: 2px solid transparent;
+      padding: 0.8rem 2.5rem;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      margin-top: 1.5rem;
+      user-select: none;
+    }
+
+    .btn-sample:hover, .btn-sample.active {
+      border-color: var(--text-main); 
+      box-shadow: 0 0 15px rgba(225, 29, 72, 0.5);
+    }
+
+    /* Footer */
+    .site-footer {
+      text-align: center;
+      padding: 2rem 0;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="portal-header">
+    <div class="container">
+      <h1>jQuery Interaction Exercise</h1>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="site-nav">
+    <div class="container">
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="finals2.html">JS Demo</a></li>
+        <li><a href="finals3.html">jQuery Final</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container demo-wrapper">
+    <div class="demo-card">
+      
+      <h2>HELLO BSCS31A</h2>
+      
+      <!-- Dynamic Output Text -->
+      <p class="output-text" id="statusOutput">Output</p>
+      
+      <p class="static-text">Welcome to jQuery</p>
+      
+      <a class="link-text" id="linkClickMe">Click Me Link</a>
+      
+      <p class="static-text">Hallo World</p>
+
+      <!-- Input Controls -->
+      <div class="controls-group">
+        <input type="text" id="nameInput" placeholder="Enter your Name">
+        <select id="courseSelect">
+          <option value="BSIT">BSIT</option>
+          <option value="BSCS">BSCS</option>
+        </select>
+        <button class="btn-red" id="btnAction">Click Me</button>
+      </div>
+
+      <!-- Data Table (Toggleable) -->
+      <div id="tableWrapper" style="width: 100%; transition: all 0.4s ease;">
+        <div class="table-container" id="dataTable">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Sample Data</th><th>Sample Data</th><th>Sample Data</th><th>Sample Data</th><th>Sample Data</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Data1</td><td>Data2</td><td>Data3</td><td>Data4</td><td>Data5</td></tr>
+              <tr><td>Data1</td><td>Data2</td><td>Data3</td><td>Data4</td><td>Data5</td></tr>
+              <tr><td>Data1</td><td>Data2</td><td>Data3</td><td>Data4</td><td>Data5</td></tr>
+              <tr><td>Data1</td><td>Data2</td><td>Data3</td><td>Data4</td><td>Data5</td></tr>
+              <tr><td>Data1</td><td>Data2</td><td>Data3</td><td>Data4</td><td>Data5</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Sample Button -->
+      <button class="btn-sample" id="btnSample">Sample Button</button>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>Copyright@2026</p>
+  </footer>
+
+  <!-- JavaScript Logic (Comprehensive Events) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      
+      const statusOutput = document.getElementById('statusOutput');
+      const btnSample = document.getElementById('btnSample');
+      const dataTable = document.getElementById('dataTable');
+      const tableWrapper = document.getElementById('tableWrapper');
+      
+      const linkClickMe = document.getElementById('linkClickMe');
+      const btnAction = document.getElementById('btnAction');
+      const nameInput = document.getElementById('nameInput');
+      const courseSelect = document.getElementById('courseSelect');
+
+      // --- TEXT INPUT EVENTS ---
+      // Nagti-trigger tuwing nagta-type ang user
+      nameInput.addEventListener('input', (e) => {
+        if(e.target.value.length > 0) {
+          statusOutput.textContent = `You are typing: ${e.target.value}`;
+        } else {
+          statusOutput.textContent = "Input is empty";
+        }
+      });
+
+      // --- SELECT DROPDOWN EVENT ---
+      courseSelect.addEventListener('change', (e) => {
+        statusOutput.textContent = `You selected: ${e.target.value}`;
+      });
+
+      // --- LINK EVENTS ---
+      linkClickMe.addEventListener('click', () => {
+        statusOutput.textContent = "You clicked the Link!";
+      });
+      linkClickMe.addEventListener('dblclick', () => {
+        statusOutput.textContent = "You DOUBLE-CLICKED the Link!";
+      });
+
+      // --- RED BUTTON EVENTS ---
+      btnAction.addEventListener('mouseenter', () => {
+        statusOutput.textContent = "Mouse Enters the Red Button!";
+      });
+      btnAction.addEventListener('mouseleave', () => {
+        statusOutput.textContent = "Mouse Leaves the Red Button!";
+      });
+      btnAction.addEventListener('click', () => {
+        statusOutput.textContent = "You CLICKED the Red Button!";
+      });
+      btnAction.addEventListener('dblclick', () => {
+        statusOutput.textContent = "You DOUBLE-CLICKED the Red Button!";
+      });
+      btnAction.addEventListener('mousedown', () => {
+        statusOutput.textContent = "Mouse is DOWN on the Red Button!";
+      });
+      btnAction.addEventListener('mouseup', () => {
+        statusOutput.textContent = "Mouse is UP on the Red Button!";
+      });
+
+      // --- BOTTOM SAMPLE BUTTON EVENTS (Table Toggle + Hover) ---
+      btnSample.addEventListener('mouseenter', () => {
+        statusOutput.textContent = "Your Mouse enters the button!";
+        btnSample.classList.add('active'); 
+      });
+
+      btnSample.addEventListener('mouseleave', () => {
+        statusOutput.textContent = "Your Mouse leaves the button!";
+        btnSample.classList.remove('active'); 
+      });
+
+      btnSample.addEventListener('click', () => {
+        statusOutput.textContent = "Table Visibility Toggled!";
+        
+        // Show/Hide Table Logic
+        dataTable.classList.toggle('hidden');
+        if (dataTable.classList.contains('hidden')) {
+          tableWrapper.style.height = '0px';
+          tableWrapper.style.opacity = '0';
+        } else {
+          tableWrapper.style.height = 'auto';
+          tableWrapper.style.opacity = '1';
+        }
+      });
+
+      btnSample.addEventListener('dblclick', () => {
+        statusOutput.textContent = "You DOUBLE-CLICKED the Sample Button!";
+      });
+
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Interactions | Michael Luis T. Ramos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Design System Variables */
+    :root {
+      --bg-base: #0b1220;
+      --bg-surface: #131e32;
+      --bg-nav: rgba(19, 30, 50, 0.8);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --border-color: rgba(255, 255, 255, 0.1);
+      --input-bg: rgba(255, 255, 255, 0.03);
+      --font-body: 'DM Sans', sans-serif;
+      --font-heading: 'Manrope', sans-serif;
+      --transition: 0.3s ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Portal Header */
+    .portal-header {
+      background: var(--bg-surface);
+      padding: 3rem 2rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .portal-header h1 {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      color: var(--accent);
+    }
+
+    /* Navigation */
+    .site-nav {
+      background: var(--bg-nav);
+      backdrop-filter: blur(10px);
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-weight: 500;
+      transition: color var(--transition);
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .nav-links .active {
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 0.3rem 1rem;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Interaction Card */
+    .interaction-wrapper {
+      padding: 4rem 0;
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .interaction-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 3rem;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    .interaction-card h2 {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      color: var(--text-main);
+      margin-bottom: 0.2rem;
+    }
+
+    .interaction-card h3 {
+      font-family: var(--font-body);
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      font-weight: 400;
+      margin-bottom: 2rem;
+    }
+
+    /* Inputs */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      max-width: 400px;
+      padding: 0.8rem 1rem;
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color var(--transition);
+      margin: 0 auto;
+      display: block;
+    }
+
+    input[type="text"]:focus, select:focus {
+      border-color: var(--accent);
+    }
+
+    select {
+      cursor: pointer;
+    }
+
+    select option {
+      background: var(--bg-surface);
+      color: var(--text-main);
+    }
+
+    /* Buttons */
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-action {
+      background: transparent;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 0.8rem 1.5rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 500;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: all var(--transition);
+      user-select: none; /* Prevents text selection on double click/hold */
+    }
+
+    .btn-action:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-action:active {
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    /* Output Console */
+    .output-console {
+      background: var(--bg-base);
+      border: 1px dashed var(--accent);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      color: var(--accent);
+      font-family: monospace;
+      font-size: 1.1rem;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Hover Box */
+    .hover-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 2rem;
+      cursor: crosshair;
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    .hover-box p {
+      margin: 0;
+      color: var(--text-muted);
+      transition: color var(--transition);
+    }
+
+    .hover-box.active {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: var(--accent);
+    }
+
+    .hover-box.active p {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Footer */
+    .site-footer {
+      text-align: center;
+      padding: 2rem 0;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="portal-header">
+    <div class="container">
+      <h1>JavaScript Event Interactions</h1>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="site-nav">
+    <div class="container">
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="finals2.html">JS Demo</a></li>
+        <li><a href="finals3.html">jQuery Final</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Interaction Card Content -->
+  <main class="container interaction-wrapper">
+    <div class="interaction-card">
+      
+      <h2>Future Web Dev</h2>
+      <h3>BS Computer Science</h3>
+      
+      <!-- Inputs -->
+      <div class="form-group">
+        <input type="text" id="nicknameInput" placeholder="Type your nickname">
+      </div>
+
+      <div class="form-group">
+        <select id="yearSelect">
+          <option value="1st Year">1st Year</option>
+          <option value="2nd Year">2nd Year</option>
+          <option value="3rd Year">3rd Year</option>
+          <option value="4th Year">4th Year</option>
+        </select>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="button-group">
+        <button type="button" class="btn-action" id="btnClick">Click</button>
+        <button type="button" class="btn-action" id="btnDoubleClick">Double Click</button>
+        <button type="button" class="btn-action" id="btnHold">Press & Hold</button>
+      </div>
+
+      <!-- Status Output -->
+      <div class="output-console" id="statusOutput">
+        Waiting for interaction.....
+      </div>
+
+      <!-- Hover Detection Box -->
+      <div class="hover-box" id="hoverBox">
+        <p id="hoverText">Hover your mouse over this box</p>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>Copyright@2026</p>
+  </footer>
+
+  <!-- JavaScript Interaction Logic -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Elements
+      const statusOutput = document.getElementById('statusOutput');
+      const nicknameInput = document.getElementById('nicknameInput');
+      const yearSelect = document.getElementById('yearSelect');
+      
+      const btnClick = document.getElementById('btnClick');
+      const btnDoubleClick = document.getElementById('btnDoubleClick');
+      const btnHold = document.getElementById('btnHold');
+      
+      const hoverBox = document.getElementById('hoverBox');
+      const hoverText = document.getElementById('hoverText');
+
+      // Helper function to update status
+      function updateStatus(message) {
+        statusOutput.textContent = message;
+      }
+
+      // 1. Input Event (Typing)
+      nicknameInput.addEventListener('input', (e) => {
+        const text = e.target.value;
+        if(text.length > 0) {
+          updateStatus(`Typing: ${text}`);
+        } else {
+          updateStatus("Input cleared.");
+        }
+      });
+
+      // 2. Select Change Event
+      yearSelect.addEventListener('change', (e) => {
+        updateStatus(`Selected: ${e.target.value}`);
+      });
+
+      // 3. Single Click Event
+      btnClick.addEventListener('click', () => {
+        updateStatus("Single Click Action Triggered!");
+      });
+
+      // 4. Double Click Event
+      btnDoubleClick.addEventListener('dblclick', () => {
+        updateStatus("Double Click Action Triggered!");
+      });
+
+      // 5. Press & Hold Events
+      let holdTimer;
+      btnHold.addEventListener('mousedown', () => {
+        updateStatus("Button is being held down...");
+        // Add a visual effect while holding
+        btnHold.style.background = "rgba(56, 189, 248, 0.2)";
+      });
+
+      btnHold.addEventListener('mouseup', () => {
+        updateStatus("Button released!");
+        btnHold.style.background = "transparent";
+      });
+
+      btnHold.addEventListener('mouseleave', () => {
+        // Just in case the user moves the mouse away while holding
+        btnHold.style.background = "transparent";
+      });
+
+      // 6. Hover Box Events
+      hoverBox.addEventListener('mouseenter', () => {
+        hoverBox.classList.add('active');
+        hoverText.textContent = "You're inside the box";
+        updateStatus("Mouse entered the interaction box.");
+      });
+
+      hoverBox.addEventListener('mouseleave', () => {
+        hoverBox.classList.remove('active');
+        hoverText.textContent = "Hover your mouse over this box";
+        updateStatus("Mouse left the interaction box.");
+      });
+
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Demo | Michael Luis T. Ramos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Design System Variables */
+    :root {
+      --bg-base: #0b1220;
+      --bg-surface: #131e32;
+      --bg-nav: rgba(19, 30, 50, 0.8);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --success: #4ade80; /* Green for ready state */
+      --border-color: rgba(255, 255, 255, 0.1);
+      --font-body: 'DM Sans', sans-serif;
+      --font-heading: 'Manrope', sans-serif;
+      --transition: 0.3s ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Portal Header */
+    .portal-header {
+      background: var(--bg-surface);
+      padding: 3rem 2rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .portal-header h1 {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      color: var(--accent);
+    }
+
+    /* Navigation */
+    .site-nav {
+      background: var(--bg-nav);
+      backdrop-filter: blur(10px);
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-weight: 500;
+      transition: color var(--transition);
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .nav-links .active {
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 0.3rem 1rem;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Demo Layout */
+    .demo-wrapper {
+      padding: 5rem 0;
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .demo-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 4rem 3rem;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    .demo-card h2 {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      color: var(--text-main);
+      margin-bottom: 2rem;
+    }
+
+    /* Load Button */
+    .btn-load {
+      background-color: #3b82f6; 
+      color: #ffffff;
+      border: 2px solid #000; /* Added black border like the image */
+      padding: 0.5rem 2rem;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+      margin-bottom: 2rem;
+    }
+
+    .btn-load:hover {
+      background-color: #2563eb;
+      transform: translateY(-2px);
+    }
+
+    .btn-load:disabled {
+      background-color: #475569;
+      border-color: #333;
+      cursor: not-allowed;
+      transform: none;
+      opacity: 0.7;
+    }
+
+    /* Data Display Area */
+    .data-container {
+      min-height: 220px; 
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .status-text {
+      font-size: 1.3rem;
+      color: var(--text-muted);
+      font-style: italic;
+      display: none; 
+      font-family: var(--font-heading);
+      transition: color var(--transition);
+    }
+
+    /* When status is Dashboard Ready */
+    .status-text.ready {
+      color: var(--success);
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    .data-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+      max-width: 280px;
+    }
+
+    .data-item {
+      font-size: 1.2rem;
+      color: var(--text-main);
+      font-weight: 500;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.6rem 2rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      opacity: 0; 
+      display: none; 
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      transform: translateY(10px); 
+    }
+
+    .data-item.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Footer */
+    .site-footer {
+      text-align: center;
+      padding: 2rem 0;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+  </style>
+</head>
+<body>
+
+  <header class="portal-header">
+    <div class="container">
+      <h1>JavaScript Timer Demo</h1>
+    </div>
+  </header>
+
+  <nav class="site-nav">
+    <div class="container">
+      <ul class="nav-links">
+       <li><a href="index.html">Home</a></li>
+        <li><a href="finals2.html">JS Demo</a></li>
+        <li><a href="finals3.html">jQuery Final</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container demo-wrapper">
+    <div class="demo-card">
+      
+      <h2>Javascript Demo</h2>
+      
+      <button type="button" class="btn-load" id="loadBtn">Load</button>
+
+      <div class="data-container">
+        <!-- Status Text -->
+        <p class="status-text" id="statusText">Waiting....</p>
+        
+        <!-- Data list items -->
+        <div class="data-list" id="dataList">
+          <p class="data-item">Profile: Loaded</p>
+          <p class="data-item">Grades: Loaded</p>
+          <p class="data-item">Schedule: Loaded</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>Copyright@2026</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const loadBtn = document.getElementById('loadBtn');
+      const statusText = document.getElementById('statusText');
+      const dataItems = document.querySelectorAll('.data-item');
+
+      loadBtn.addEventListener('click', () => {
+        // I-disable ang button at i-reset ang UI
+        loadBtn.disabled = true;
+        
+        // I-reset ang text sa "Waiting...."
+        statusText.textContent = 'Waiting....';
+        statusText.classList.remove('ready');
+        statusText.style.display = 'block';
+
+        // Itago ulit ang mga items kung sakaling naka-load na
+        dataItems.forEach(item => {
+          item.classList.remove('show');
+          item.style.display = 'none';
+        });
+
+        // Unang timer: Maghihintay ng 2 seconds bago magpalit ang text
+        setTimeout(() => {
+          // Palitan ang text ng "Dashboard Ready" at i-apply ang styling nito
+          statusText.textContent = 'Dashboard Ready';
+          statusText.classList.add('ready');
+          
+          // I-loop ang mga items para lumabas ng isa-isa (may delay bawat isa)
+          dataItems.forEach((item, index) => {
+            setTimeout(() => {
+              item.style.display = 'block';
+              
+              // Maliit na delay para gumana ang CSS fade animation
+              setTimeout(() => {
+                item.classList.add('show');
+              }, 50);
+
+            }, index * 1000); // 1000ms = 1 second interval kada item
+          });
+          
+          // I-enable ulit ang button pagkatapos lumabas lahat ng items
+          setTimeout(() => {
+            loadBtn.disabled = false;
+          }, dataItems.length * 1000);
+
+        }, 2000); // 2000ms = 2 seconds bago lumabas ang "Dashboard Ready"
+      });
+    });
+  </script>
+
+</body>
+</html>
